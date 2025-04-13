@@ -4,8 +4,9 @@ require('dotenv').config()
 const PORT = process.env.PORT || 3000
 const router = require('./router')
 const ConnectDB = require("./Config/db")
-
+app.use(express.json())
 app.use(router)
+
 ConnectDB()
 //http://localhost:4000
 app.listen(PORT, ()=>

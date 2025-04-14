@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, "Username must be required"],
         minlength:[5, "password must be minimum 5 characters"],
-        maxlength:[50, "password must be maximum 50 characters"]
+        // maxlength:[50, "password must be maximum 50 characters"]
     },
     phone:{
         type: String,

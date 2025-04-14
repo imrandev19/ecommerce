@@ -1,4 +1,5 @@
 const emailValidation = require("../helpers/emailvalidation");
+const sendEmail = require("../helpers/sendEmail");
 const userModel = require("../model/userModel")
 const bcrypt = require('bcrypt');
 const signupController = async (req,res)=>{
@@ -20,7 +21,9 @@ const signupController = async (req,res)=>{
                  password: hash
              });
              await user.save()
+             sendEmail(email)
              return res.status(201).json({success:true, message: "Data send successfully to the server", user})
+             
          }
         });
         

@@ -11,13 +11,13 @@ const userSchema = new mongoose.Schema({
     },
     email:{
         type: String,
-        required: [true, "Username must be required"],
+        required: [true, "Email must be required"],
         unique:true,
         trim:true
     },
     password:{
         type: String,
-        required: [true, "Username must be required"],
+        required: [true, "Password must be required"],
         minlength:[5, "password must be minimum 5 characters"],
         // maxlength:[50, "password must be maximum 50 characters"]
     },
@@ -43,6 +43,9 @@ const userSchema = new mongoose.Schema({
     isVerfied:{
         type:Boolean,
         default:false
+    },
+    otp:{
+        type:String
     }
 },
 {

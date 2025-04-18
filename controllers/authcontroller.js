@@ -3,6 +3,9 @@ const optVerification = require("../helpers/otpVerification");
 const sendEmail = require("../helpers/sendEmail");
 const userModel = require("../model/userModel")
 const bcrypt = require('bcrypt');
+// const jwt = require('jsonwebtoken');
+
+
 const signupController = async (req,res)=>{
     let {username, email, password} = req.body
     
@@ -41,10 +44,111 @@ const signupController = async (req,res)=>{
     }
    
 }
-
-const loginController = (req,res)=>{
-    res.send("Login Route")
+const otpVerify = async (req,res)=>{
+    const {email,otp} = req.body
+    try {
+        
+        const id = await userModel.findOne({email})
+    if(id.otp == otp){
+        id.isVerfied = true,
+        id.otp = null,
+        id.save()
+        res.status(200).json({success:true, message: "opt is verified"})
+        id.save()
+    }
+    else{
+        return res.status(400).json({success:false, message: "Otp is incorrect"}) 
+    }
+    } catch (error) {
+        return res.status(500).json({success:false, message: error.message || "Something Went Wrong"})
+    }
     
 }
 
-module.exports = {signupController, loginController}
+const loginController = async (req,res)=>{
+    let {email, password} = req.body
+
+    try {
+        const existingUser = await userModel.findOne({email})
+        
+        if(!existingUser){
+            return res.status(500).json({success:false, message: "Invalid Email"}) 
+        }
+        else{
+            bcrypt.compare(password, existingUser.password, function(err, result){
+                if(!err){
+                    if(result){
+                        
+                    let userData = {
+                        id: existingUser._id,
+                        email: existingUser.email,
+                        role: existingUser.role,
+                        
+                    }
+                    req.session.user = userData
+                    if(existingUser.role == "admin"){
+                        req.session.cookie.maxAge = 5*60*1000
+                    }
+                    // const token = jwt.sign({userData}, process.env.JWTSECREET, {expiresIn:"1m"});
+                    // res.cookie("ecommerce", token)
+                    return res.status(200).json({ message: "Login Successful",data: userData })
+                    }else{
+                        return res.status(400).json({success:false, message:  "Wrong Password"})  
+                    }
+                }else{
+                    return res.status(400).json({success:false, message:  err.message ||"bcrypt failed"})  
+                }
+            });
+            
+        }
+        
+    } catch (error) {
+        return res.status(500).json({success:false, message: error.message || "Something Went Wrong"}) 
+    }
+    
+}
+const logoutController =async(req,res)=>{
+    res.clearCookie("ecommerceSessionCookie")
+    req.session.destroy(function(err) {
+        
+        if(err){
+            return res.status(500).json({success:false, message: err.message})
+        }
+        else{
+            return  res.status(200).json({success:true, message: "Logout successfully"})
+        }
+      })
+}
+const changePassword = async(req,res)=>{
+ let {email, oldpassword, newpassword} = req.body
+
+ try {
+    
+        let existingUser = await userModel.findOne({email})
+        bcrypt.compare(oldpassword, existingUser.password, function(err, result) {
+            if(err){
+                return res.status(500).json({success:false, message: err.message })
+            }else{
+                if(!result){
+                    return res.status(400).json({success:false, message: "Password Not Match" })
+                }else{
+                    bcrypt.hash(newpassword, 10, async function(err, hashnew) {
+                        if(err){
+                            return res.status(500).json({success:false, message: err.message }) 
+                        }else{
+                          await userModel.findOneAndUpdate({email},{password:hashnew}, {new:true})
+                          return res.status(200).json({success:true, message: "Password Changed Successfully"})
+                        }
+                        
+                    });
+                }
+            }
+            
+        });
+    
+ } catch (error) {
+    return res.status(500).json({success:false, message: error.message || "Issue facing to password change function"})
+ }
+}
+
+module.exports = {signupController, loginController, otpVerify, logoutController, changePassword}

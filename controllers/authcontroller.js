@@ -48,13 +48,13 @@ const otpVerify = async (req,res)=>{
     const {email,otp} = req.body
     try {
         
-        const id = await userModel.findOne({email})
+    const id = await userModel.findOne({email})
     if(id.otp == otp){
         id.isVerfied = true,
         id.otp = null,
         id.save()
-        res.status(200).json({success:true, message: "opt is verified"})
-        id.save()
+        return res.status(200).json({success:true, message: "opt is verified"})
+        
     }
     else{
         return res.status(400).json({success:false, message: "Otp is incorrect"}) 
@@ -69,16 +69,17 @@ const loginController = async (req,res)=>{
     let {email, password} = req.body
 
     try {
+        
         const existingUser = await userModel.findOne({email})
         
         if(!existingUser){
-            return res.status(500).json({success:false, message: "Invalid Email"}) 
+            return res.status(400).json({success:false, message: "Invalid Email"}) 
         }
         else{
             bcrypt.compare(password, existingUser.password, function(err, result){
                 if(!err){
                     if(result){
-                        
+                      
                     let userData = {
                         id: existingUser._id,
                         email: existingUser.email,
@@ -150,5 +151,61 @@ const changePassword = async(req,res)=>{
     return res.status(500).json({success:false, message: error.message || "Issue facing to password change function"})
  }
 }
+const resendOtp = async (req,res)=>{
+    let {email} = req.body
+    try {
+        let existingUser = await userModel.find({email})
+     if(!existingUser){
+                return res.status(400).json({success:false, message:  "User Not Found" })
+    }else{
+        const otp = optVerification()
+       let user= await userModel.findOneAndUpdate({email},{otp}, {new:true})
+                sendEmail(email, otp)
+                
+                setTimeout(async() => {
+                    await userModel.findOneAndUpdate({email}, {otp:null}).then(()=>{
+                        console.log("OTP Deleted")
+                    })
+                    user.save()
+                }, 300000);
+                return res.status(200).json({success:true, message: "Otp Resend Successfully"})
+            }
 
-module.exports = {signupController, loginController, otpVerify, logoutController, changePassword}
+    
+    } catch (error) {
+        return res.status(500).json({success:false, message: error.message || "Failed to Resend OTP" })
+    }
+}
+// First Go to resend otp route for new otp then resetpassword route
+const resetPassword = async (req,res)=>{
+    let {email, otp, newpassword} = req.body
+    try {
+        const existingUser = await userModel.find({email})
+        if(!existingUser){
+            return res.status(400).json({success:false, message:  "User Not Found" })
+        }else{
+            let user = await userModel.findOne({email})
+                    
+                    if(otp == user.otp){
+                        bcrypt.hash(newpassword, 10, async function(err, hash) {
+                            if(err){
+                                return res.status(500).json({success:false, message: err.message || "Failed to Encript Password" })
+                            }
+                            else{
+                                await userModel.findOneAndUpdate({email}, {password:hash})
+                                return res.status(200).json({success:true, message: "Password Reset Successfully"})
+                            }
+                        });
+                    }else{
+                        return res.status(400).json({success:true, message: "Wrong OTP"})
+                    }
+                    
+                     
+
+        }
+    } catch (error) {
+        return res.status(500).json({success:false, message: error.message || "Failed to Reset Password" })
+    }
+}
+
+module.exports = {signupController, loginController, otpVerify, logoutController, changePassword, resendOtp,resetPassword}

@@ -4,15 +4,13 @@ const categoryModel = new mongoose.Schema({
     categoryName:{
         type:String,
         required:[true, "Category must be required"],
-        minlengh:[3, "Minimum 3 Characters"],
+        minlengh:[1, "Minimum 1 Characters"],
         maxlengh:[40, "Maximum 40 Characters"],
         trim:true
     },
-    image_link:{
+    image:{
         type:String,
-        required:[true, "Category must be required"],
-        trim:true
-        
+        required:[true, "Image must be required"],        
     },
     description:{
         type:String,        

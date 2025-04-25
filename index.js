@@ -19,7 +19,9 @@ const ConnectDB = require("./Config/db")
 app.get('/authoriseduserpage', adminMiddleware,(req,res)=>{
     res.send(req.session.user)
 })
+
 app.use(express.json())
+app.use(express.static('uploads'))
 app.use(router)
 
 

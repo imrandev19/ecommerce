@@ -1,5 +1,5 @@
 const express = require("express")
-const addcategorycontroller = require("../../controllers/categorycontroller")
+const {addcategorycontroller, allcategiresController} = require("../../controllers/categorycontroller")
 const router =express.Router()
 const path = require("path");
 const multer  = require('multer')
@@ -38,6 +38,6 @@ const upload = multer({ storage: storage,
     limits: { fileSize: 3000000 } })
 // http://localhost:4000/api/category/addcategory
 router.post('/addcategory',upload.single('image'), addcategorycontroller)
-
+router.get("/allcategires", allcategiresController)
 
 module.exports = router

@@ -2,7 +2,9 @@ const express = require("express")
 const {addcategorycontroller, allcategiresController} = require("../../controllers/categorycontroller")
 const router =express.Router()
 const path = require("path");
-const multer  = require('multer')
+const multer  = require('multer');
+const adminMiddleware = require("../../middleware/adminMiddleware");
+const authMiddleware = require("../../middleware/authMiddleware");
 function checkFileType(file, cb){
     // Allowed ext
     const filetypes = /jpeg|jpg|png|gif|webp/;
@@ -37,7 +39,7 @@ const upload = multer({ storage: storage,
     checkFileType(file, cb)},
     limits: { fileSize: 3000000 } })
 // http://localhost:4000/api/category/addcategory
-router.post('/addcategory',upload.single('image'), addcategorycontroller)
+router.post('/addcategory',upload.single('image'),authMiddleware, adminMiddleware, addcategorycontroller)
 router.get("/allcategires", allcategiresController)
 
 module.exports = router

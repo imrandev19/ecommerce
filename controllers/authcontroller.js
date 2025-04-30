@@ -17,7 +17,7 @@ const signupController = async (req,res)=>{
          }
          else{
             if (!emailValidation(email)){
-                return res.send("not a valid mail")
+                return res.status(400).json({success:false, message: "Your email is not a valid email"})
              }
              
              let user = new userModel({

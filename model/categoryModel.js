@@ -8,6 +8,11 @@ const categoryModel = new mongoose.Schema({
         maxlengh:[40, "Maximum 40 Characters"],
         trim:true
     },
+    slug:{
+        type:String,
+        required:true,
+        unique:true
+    },
     image:{
         type:String,
         required:[true, "Image must be required"],        

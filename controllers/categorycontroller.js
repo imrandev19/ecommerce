@@ -51,13 +51,29 @@ const singleCategory = async (req, res) => {
       message: "Single Category Found Successfully",
       data: category,
     });
+    if(!category){
+      return res.status(400).json({ success: false, message: "route not found" });
+    }
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+   return res.status(500).json({ success: false, message: error.message });
   }
 };
-
+const deleteCategory = async (req,res)=>{
+  let {id} = req.params
+  try {
+   
+    const selectCategory = await categoryModel.findOneAndDelete({_id:id})
+    if(!selectCategory){
+      return res.status(400).json({ success: false, message: "category not found" });
+    }
+    return res.status(200).json({ success: true, message: "category deleted successfully" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+  
+}
 module.exports = {
   addcategorycontroller,
   allcategiresController,
-  singleCategory,
+  singleCategory, deleteCategory
 };

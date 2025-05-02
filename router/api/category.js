@@ -1,5 +1,5 @@
 const express = require("express")
-const {addcategorycontroller, allcategiresController, singleCategory} = require("../../controllers/categorycontroller")
+const {addcategorycontroller, allcategiresController, singleCategory, deleteCategory} = require("../../controllers/categorycontroller")
 const router =express.Router()
 const path = require("path");
 const multer  = require('multer');
@@ -44,5 +44,7 @@ router.post('/addcategory',upload.single('image'),authMiddleware, adminMiddlewar
 router.get("/allcategires", allcategiresController)
 // http://localhost:4000/api/category/singlecategory/
 router.get("/singlecategory/:slugname", singleCategory)
+// http://localhost:4000/api/category/deletecategory/
+router.delete("/deletecategory/:id", deleteCategory )
 
 module.exports = router

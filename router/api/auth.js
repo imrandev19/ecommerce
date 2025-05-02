@@ -8,7 +8,7 @@ router.post('/signup', signupController)
 router.post('/otpverify', otpVerify)
 // http://localhost:4000/api/auth/resendotp
 router.patch("/resendotp", resendOtp)
-// http://localhost:4000/api/auth/login
+//  
 router.post('/login', loginController)
 // http://localhost:4000/api/auth/authuser
 router.get('/authuser', authMiddleware, async (req,res)=>{

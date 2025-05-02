@@ -1,6 +1,7 @@
 const categoryModel = require("../model/categoryModel");
 const slugify = require("slugify");
-
+const path= require("path")
+const fs = require("fs")
 const addcategorycontroller = async (req, res) => {
   const { categoryName, description } = req.body;
   const slugSingle = categoryName 
@@ -62,7 +63,15 @@ const deleteCategory = async (req,res)=>{
   let {id} = req.params
   try {
    
-    const selectCategory = await categoryModel.findOneAndDelete({_id:id})
+    const selectCategory = await categoryModel.findOne({_id:id})
+    const imageName = selectCategory.image.split("/")
+    const cutImageName = imageName[imageName.length-1]
+    const serverImageFolder = path.join(__dirname,"../uploads")
+    const serverImageLink = `${serverImageFolder}/${cutImageName}`
+    fs.unlink(serverImageLink, (err)=>{
+      return res.status(400).json({ success: false, message: "Image not found" });
+    })
+    console.log(serverImageLink)
     if(!selectCategory){
       return res.status(400).json({ success: false, message: "category not found" });
     }

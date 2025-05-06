@@ -28,7 +28,7 @@ const addcategorycontroller = async (req, res) => {
 };
 const allcategiresController = async (req, res) => {
   try {
-    let getCategories = await categoryModel.find({});
+    let getCategories = await categoryModel.find({}).sort({"created_at": -1});
     res.status(200).json({
       success: true,
       message: "File Uploaded Successfully",

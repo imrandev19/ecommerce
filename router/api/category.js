@@ -16,5 +16,4 @@ router.get("/singlecategory/:slugname", singleCategory)
 router.delete("/deletecategory/:id", authMiddleware, adminMiddleware, deleteCategory )
 // http://localhost:4000/api/category/updatecategory/
 router.patch("/updatecategory/:id",upload.single('image'), authMiddleware, adminMiddleware, updateCategory)
-
 module.exports = router

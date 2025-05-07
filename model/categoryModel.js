@@ -19,7 +19,11 @@ const categoryModel = new mongoose.Schema({
     },
     description:{
         type:String,        
-    }
+    },
+    subcategory:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Subcategory"
+    }]
 },
 {timestamps:true}
 )

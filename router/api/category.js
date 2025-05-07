@@ -8,8 +8,8 @@ const upload = require("../../helpers/upload");
 
 // http://localhost:4000/api/category/addcategory
 router.post('/addcategory',upload.single('image'),authMiddleware, adminMiddleware, addcategorycontroller)
-// http://localhost:4000/api/category/allcategires
-router.get("/allcategires", allcategiresController)
+// http://localhost:4000/api/category/allcategories
+router.get("/allcategories", allcategiresController)
 // http://localhost:4000/api/category/singlecategory/
 router.get("/singlecategory/:slugname", singleCategory)
 // http://localhost:4000/api/category/deletecategory/

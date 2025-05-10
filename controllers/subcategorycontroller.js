@@ -28,5 +28,41 @@ const addsubcategory = async (req,res)=>{
         })
     }
 }
+const deletesubcategory = async(req,res)=>{
+    try {
+        let {id}= req.params
+        await subcategoryModel.findOneAndDelete({_id:id})
+       const updateCategry = await categoryModel.findOneAndUpdate({subcategory:id}, {$pull: {subcategory:id} }, {new:true})
+       updateCategry.save()
+       return res.status(200).json({
+        success:true,
+        message: "Subcategory Deleted Successfully",
+    })
+    } catch (error) {
+        return res.status(500).json({success:false, message: error.message})
+    }
+}
+const updatesubcategory = async(req,res)=>{
+ try {
+   let {id} = req.params
+   let {name, description, category} = req.body
+  let slug = slugify(name, {
+    replacement: '-',  // replace spaces with replacement character, defaults to `-`
+    lower: true,      // convert to lower case, defaults to `false`
+  })
+   const updateSubcategory = subcategoryModel.findOneAndUpdate({_id:id},
+    {name,
+    description,
+    category,
+    slug
+    },
+    {new:true}
+   )
+   updateSubcategory.save()
+   return res.status(200).json({success:true, message: "Subcategory Updated Successfully", data: updateSubcategory})
+ } catch (error) {
+    return res.status(500).json({success:false, message: error.message})
+ }
+}
 
-module.exports = addsubcategory
+module.exports = {addsubcategory, deletesubcategory, updatesubcategory}

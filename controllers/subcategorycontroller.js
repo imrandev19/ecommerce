@@ -50,7 +50,7 @@ const updatesubcategory = async(req,res)=>{
     replacement: '-',  // replace spaces with replacement character, defaults to `-`
     lower: true,      // convert to lower case, defaults to `false`
   })
-   const updateSubcategory = subcategoryModel.findOneAndUpdate({_id:id},
+   const updateSubcategory = await subcategoryModel.findOneAndUpdate({_id:id},
     {name,
     description,
     category,
@@ -59,6 +59,12 @@ const updatesubcategory = async(req,res)=>{
     {new:true}
    )
    updateSubcategory.save()
+   if(category){
+    const delFromCategory = await categoryModel.findOneAndUpdate({subcategory:id}, {$pull:{subcategory:id}}, {new:true})
+   await delFromCategory.save()
+   const updatecategory = await categoryModel.findOneAndUpdate({_id:category}, {$push:{subcategory:id}}, {new:true})
+   await updatecategory.save()
+   }
    return res.status(200).json({success:true, message: "Subcategory Updated Successfully", data: updateSubcategory})
  } catch (error) {
     return res.status(500).json({success:false, message: error.message})

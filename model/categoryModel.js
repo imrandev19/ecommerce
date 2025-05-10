@@ -23,7 +23,11 @@ const categoryModel = new mongoose.Schema({
     subcategory:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Subcategory"
-    }]
+    }],
+    product:[{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:"Product"
+        }],
 },
 {timestamps:true}
 )

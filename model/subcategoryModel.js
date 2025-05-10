@@ -13,6 +13,10 @@ const subcategoryModel = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:"Category"
     },
+    product:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Product"
+    }],
     slug:{
         type:String,
         required:true,

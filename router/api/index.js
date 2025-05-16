@@ -4,6 +4,7 @@ const authRouter = require ("./auth")
 const category = require ("./category")
 const subCategory = require("./subcategory")
 const product = require("./product")
+const variant = require("./variant")
 // http://localhost:4000/api/auth
 router.use("/auth", authRouter)
 // http://localhost:4000/api/category
@@ -12,4 +13,5 @@ router.use("/category", category)
 router.use("/subcategory", subCategory)
 // http://localhost:4000/api/product
 router.use("/product", product)
+router.use("/variant", variant)
 module.exports = router

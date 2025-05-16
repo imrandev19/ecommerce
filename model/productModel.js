@@ -45,7 +45,11 @@ const productModel = new mongoose.Schema({
     subcategory:{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Subcategory"
-    }
+    },
+    variant:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Variant"
+    }]
 },
 {timestamps:true}
 )

@@ -41,4 +41,14 @@ const addproductController = async (req, res) => {
   }
 };
 
-module.exports = addproductController;
+const getAllProductsController = async (req,res)=>{
+try {
+ 
+  const getAllProducts = await productModel.find({}).populate("variant")
+  return res.status(200).json({success:true, message: "Product Added Sucessfully", data: getAllProducts})
+} catch (error) {
+  return res.status(500).json({ success: false, message: error.message });
+}
+}
+
+module.exports = {addproductController, getAllProductsController};

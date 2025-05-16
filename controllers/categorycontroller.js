@@ -119,7 +119,7 @@ const updateCategory = async (req, res) => {
     const cutImageName = imageName[imageName.length - 1];
     const serverImageFolder = path.join(__dirname, "../uploads");
     const serverImageLink = `${serverImageFolder}/${cutImageName}`;
-    console.log(serverImageLink);
+    
     fs.unlink(serverImageLink, (err) => {
       if (err) {
         return res

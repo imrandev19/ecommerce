@@ -51,4 +51,19 @@ try {
 }
 }
 
-module.exports = {addproductController, getAllProductsController};
+const getSingleProductsController = async(req,res)=>{
+try {
+  let {id} = req.params
+  const getSingleProduct = await productModel.findById(id).populate("variant category subcategory")
+  if(!getSingleProduct){
+    return res.status(400).json({ success: false, message: "Product Not Found" });
+  }else{
+return res.status(200).json({success:true, message: "Product Added Sucessfully", data: getSingleProduct})
+  }
+   
+} catch (error) {
+  return res.status(500).json({ success: false, message: error.message });
+}
+}
+
+module.exports = {addproductController, getAllProductsController, getSingleProductsController};

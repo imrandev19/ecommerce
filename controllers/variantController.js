@@ -32,5 +32,15 @@ const addVariantController = async (req, res) => {
     return res.status(500).json({success:false, message: error.message})
   }
 };
-
-module.exports = addVariantController;
+const deleteVariantController = async(req,res)=>{
+try {
+  let {id} =req.params
+  await variantModel.findOneAndDelete({_id:id})
+  const updateproduct = await productModel.findOneAndUpdate({variant: id}, {$pull:{variant:id}}, {new:true})
+  updateproduct.save()
+  return res.status(200).json({success:true, mesage: "Variant Deleted Successfully"})
+} catch (error) {
+  return res.status(500).json({success:false, message: error.message})
+}
+}
+module.exports = {addVariantController, deleteVariantController};

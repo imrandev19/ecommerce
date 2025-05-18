@@ -16,12 +16,13 @@ const addVariantController = async (req, res) => {
       price,
       image: `${process.env.SERVER_LINK}/${req.file.filename}`,
     });
+     
     const productVariant = await productModel.findOneAndUpdate(
       { _id: product },
       { $push: { variant: addVariant._id } },
       { new: true }
     );
-    await productVariant.save();
+ 
 
     const RandomNum = `-${Math.floor(Math.random() * 9000) + 1000}`;
     const productTitle = slugify(productVariant.title.slice(0, 3), {

@@ -2,6 +2,9 @@ const { default: slugify } = require("slugify");
 const categoryModel = require("../model/categoryModel");
 const productModel = require("../model/productModel");
 const subcategoryModel = require("../model/subcategoryModel");
+const variantModel = require("../model/variantModel");
+const path = require("path")
+const fs = require("fs")
 
 const addproductController = async (req, res) => {
   try {
@@ -65,5 +68,36 @@ return res.status(200).json({success:true, message: "Product Added Sucessfully",
   return res.status(500).json({ success: false, message: error.message });
 }
 }
+const delteteProductController = async (req,res)=>{
+try {
+  let {id} = req.params
+  const product = await productModel.findOneAndDelete({_id:id})
+  const variants = await variantModel.find({product:id})
+variants.forEach((variant)=>{
 
-module.exports = {addproductController, getAllProductsController, getSingleProductsController};
+  if(variant.image){
+
+    const cutLink = variant.image.split("/");
+    const imagePath = cutLink[cutLink.length - 1];
+    const serverPath = path.join(__dirname, "../uploads");
+    const finalImage = `${serverPath}/${imagePath}`;
+    fs.unlink(finalImage, (err) => {
+      if (err) {
+        return res
+          .status(400)
+          .json({ success: false, message: "Image not found" });
+      }
+    });
+  }
+})
+      await variantModel.deleteMany({product:id})
+  if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    return res.status(200).json({success:true, message: "Product Deleted Sucessfully", })
+} catch (error) {
+   return res.status(500).json({ success: false, message: error.message });
+}
+}
+
+module.exports = {addproductController, getAllProductsController, getSingleProductsController, delteteProductController};

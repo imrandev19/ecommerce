@@ -1,5 +1,5 @@
 const express = require("express")
-const {addproductController, getAllProductsController, getSingleProductsController} = require("../../controllers/productController")
+const {addproductController, getAllProductsController, getSingleProductsController, delteteProductController} = require("../../controllers/productController")
 const authMiddleware = require("../../middleware/authMiddleware")
 const adminMiddleware = require("../../middleware/adminMiddleware")
 const upload = require("../../helpers/upload")
@@ -10,4 +10,8 @@ router.post("/addproduct", authMiddleware, adminMiddleware, upload.single("thumb
 router.get("/getallproducts", getAllProductsController)
 // http://localhost:4000/api/product/getsingleproducts
 router.get("/getsingleproducts/:id", getSingleProductsController)
+
+// http://localhost:4000/api/product/delteproduct
+router.delete("/delteproduct/:id", authMiddleware, adminMiddleware, delteteProductController)
+
 module.exports = router

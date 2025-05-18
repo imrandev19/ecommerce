@@ -62,7 +62,7 @@ const deleteVariantController = async (req, res) => {
           .json({ success: false, message: "Image not found" });
       }
     });
-     if (!variant) {
+    if (!variant) {
       return res
         .status(400)
         .json({ success: false, message: "variant not found" });
@@ -81,29 +81,77 @@ const deleteVariantController = async (req, res) => {
   }
 };
 
-const updateVariantController = async(req,res)=>{
+const updateVariantController = async (req, res) => {
   try {
-    let {id} = req.params
-    const updateVariant = await variantModel.findOneAndUpdate({_id:id},
+    let { id } = req.params;
+    let { product, stock, color, size, discountPercentage, price } = req.body;
+    if (req.file) {
+      const variant = await variantModel.findById(id);
+      const serverImageLink = variant.image;
+      const cutLink = serverImageLink.split("/");
+      const imagePath = cutLink[cutLink.length - 1];
+      const serverPath = path.join(__dirname, "../uploads");
+      const finalImage = `${serverPath}/${imagePath}`;
+      fs.unlink(finalImage, (err) => {
+        if (err) {
+          return res
+            .status(400)
+            .json({ success: false, message: "Image not found" });
+        }
+      });
+    }
+    const updateVariant = await variantModel.findOneAndUpdate(
+      { _id: id },
 
       {
-      product,
-      stock,
-      color,
-      size,
-      discountPercentage,
-      price,
-      image: req.file && `${process.env.SERVER_LINK}/${req.file.filename}`,
+        product,
+        stock,
+        color,
+        size,
+        discountPercentage,
+        price,
+        image: req.file && `${process.env.SERVER_LINK}/${req.file.filename}`,
       },
-      {new:true}
-    )
-    updateVariant.save()
-    const updateProductCategory = await productModel.findOneAndUpdate({variant:id}, {$pull:{variant:id}},{new:true})
-    updateProductCategory.save()
-    const addtoNewProductCategory = await productModel.findOneAndUpdate({_id:product}, {$push:{variant:updateVariant._id}}, {new:true})
-    addtoNewProductCategory.save()
+      { new: true }
+    );
+    const productVariant = await productModel.find({ variant: id });
+    const productId = productVariant[0].title;
+    const RandomNum = `-${Math.floor(Math.random() * 9000) + 1000}`;
+    const productTitle = slugify(productId.slice(0, 3), {
+      lower: true,
+    });
+    const productSize = updateVariant.size
+      ? `-${slugify(updateVariant.size, { lower: true })}`
+      : "";
+    const productColor = updateVariant.color
+      ? `-${slugify(updateVariant.color, { lower: true })}`
+      : "";
+    const sku = `${productTitle}${productSize}${productColor}${RandomNum}`;
+    updateVariant.sku = sku;
+    updateVariant.save();
+    if (product) {
+      const updateProductCategory = await productModel.findOneAndUpdate(
+        { variant: id },
+        { $pull: { variant: id } },
+        { new: true }
+      );
+      updateProductCategory.save();
+      const addtoNewProductCategory = await productModel.findOneAndUpdate(
+        { _id: product },
+        { $push: { variant: updateVariant._id } },
+        { new: true }
+      );
+      addtoNewProductCategory.save();
+    }
+    return res
+      .status(200)
+      .json({ success: true, message: "Variant Update Successfully" });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
-}
-module.exports = { addVariantController, deleteVariantController, updateVariantController };
+};
+module.exports = {
+  addVariantController,
+  deleteVariantController,
+  updateVariantController,
+};

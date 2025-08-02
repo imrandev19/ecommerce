@@ -8,7 +8,7 @@ const fs = require("fs")
 
 const addproductController = async (req, res) => {
   try {
-    let { title, description, price, rating, subcategory, discountPercentage } = req.body;
+    let { title, description, price, rating, subcategory, discountPercentage, featured } = req.body;
     const slugSingle = title
      const slug = slugify(slugSingle, {
           replacement: "-", // replace spaces with replacement character, defaults to `-`
@@ -32,7 +32,8 @@ const addproductController = async (req, res) => {
         discountPercentage,
         rating,
         category,
-        subcategory
+        subcategory,
+        featured
     });
     await addproduct.save()
     
@@ -99,5 +100,20 @@ variants.forEach((variant)=>{
    return res.status(500).json({ success: false, message: error.message });
 }
 }
+const getFeaturedProductsController = async (req,res)=>{
+    try {
+      const featuredProducts = await productModel.find({featured:true}).populate("category subcategory")
+      if(featuredProducts.length == 0){
+       return res.status(400).json({ success: true, message: "No Featured Products Found" }); 
+      }
+      return res.status(201).json({
+        success:true, 
+        data:featuredProducts,
+        message:"Featured Product Get"
+      })
+    } catch (error) {
+      return res.status(500).json({ success: false, message: error.message });
+    }
+}
 
-module.exports = {addproductController, getAllProductsController, getSingleProductsController, delteteProductController};
+module.exports = {addproductController, getAllProductsController, getSingleProductsController, delteteProductController, getFeaturedProductsController};

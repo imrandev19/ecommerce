@@ -1,10 +1,13 @@
 const express = require("express")
 const app = express()
+let cors = require('cors')
+
 require('dotenv').config()
 const PORT = process.env.PORT || 3000
 const session = require('express-session')
 const MongoStore = require('connect-mongo');
 const adminMiddleware = require("./middleware/adminMiddleware")
+app.use(cors())
 app.use(session({
     secret: process.env.SESSIONSECREET,
     resave: false,

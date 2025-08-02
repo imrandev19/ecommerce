@@ -46,6 +46,10 @@ const productModel = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Subcategory"
     },
+    featured:{
+        type:Boolean,
+        default:false
+    },
     variant:[{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Variant"

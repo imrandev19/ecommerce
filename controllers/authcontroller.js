@@ -84,6 +84,7 @@ const loginController = async (req,res)=>{
                         id: existingUser._id,
                         email: existingUser.email,
                         role: existingUser.role,
+                        username: existingUser.username
                         
                     }
                     req.session.user = userData

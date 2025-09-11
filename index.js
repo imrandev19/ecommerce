@@ -7,7 +7,13 @@ const PORT = process.env.PORT || 3000
 const session = require('express-session')
 const MongoStore = require('connect-mongo');
 const adminMiddleware = require("./middleware/adminMiddleware")
-app.use(cors())
+
+app.use(
+  cors({
+    origin: "http://localhost:3000", // must match frontend URL
+    credentials: true, // allow cookies/auth headers
+  })
+);
 app.use(session({
     secret: process.env.SESSIONSECREET,
     resave: false,

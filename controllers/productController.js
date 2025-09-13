@@ -70,52 +70,71 @@ const addproductController = async (req, res) => {
 
 const getAllProductsController = async (req, res) => {
   try {
-    const category = req.query.category || "";
-    const minPrice = parseFloat(req.query.minPrice) || 0;
-    const maxPrice = parseFloat(req.query.maxPrice) || Number.MAX_SAFE_INTEGER;
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 6;
-    const skip = (page - 1) * limit;
-
-    // Build filter
-    let filter = {
-      price: { $gte: minPrice, $lte: maxPrice },
-    };
-
-    if (category && category !== "all") {
-      // If category is ObjectId in DB
-      if (mongoose.Types.ObjectId.isValid(category)) {
-        filter.category = new mongoose.Types.ObjectId(category);
-      } else {
-        filter.category = category; // If stored as string
-      }
+    
+    const getAllProducts = await productModel
+      .find({})
+      .populate("variant category subcategory");
+    if (!getAllProducts) {
+      return res
+        .status(400)
+        .json({ success: false, message: "No Product Found" });
+    } else {
+      return res.status(200).json({
+        success: true,
+        message: "Products Get Sucessfully",
+        data: getAllProducts,
+      });
     }
-
-    // Get total count
-    const totalProducts = await productModel.countDocuments(filter);
-
-    // Get products with pagination
-    const products = await productModel
-      .find(filter)
-      .skip(skip)
-      .limit(limit)
-      .sort({ createdAt: -1 });
-
-    res.status(200).json({
-      success: true,
-      data: products,
-      total: totalProducts,
-      totalPages: Math.ceil(totalProducts / limit),
-      currentPage: page,
-    });
   } catch (error) {
-    console.error("Error fetching products:", error);
-    res.status(500).json({
-      success: false,
-      message: "Server Error",
-      error: error.message,
-    });
+    return res.status(500).json({ success: false, message: error.message });
   }
+  // try {
+  //   const category = req.query.category || "";
+  //   const minPrice = parseFloat(req.query.minPrice) || 0;
+  //   const maxPrice = parseFloat(req.query.maxPrice) || Number.MAX_SAFE_INTEGER;
+  //   const page = parseInt(req.query.page) || 1;
+  //   const limit = parseInt(req.query.limit) || 6;
+  //   const skip = (page - 1) * limit;
+
+  //   // Build filter
+  //   let filter = {
+  //     price: { $gte: minPrice, $lte: maxPrice },
+  //   };
+
+  //   if (category && category !== "all") {
+  //     // If category is ObjectId in DB
+  //     if (mongoose.Types.ObjectId.isValid(category)) {
+  //       filter.category = new mongoose.Types.ObjectId(category);
+  //     } else {
+  //       filter.category = category; // If stored as string
+  //     }
+  //   }
+
+  //   // Get total count
+  //   const totalProducts = await productModel.countDocuments(filter);
+
+  //   // Get products with pagination
+  //   const products = await productModel
+  //     .find(filter)
+  //     .skip(skip)
+  //     .limit(limit)
+  //     .sort({ createdAt: -1 });
+
+  //   res.status(200).json({
+  //     success: true,
+  //     data: products,
+  //     total: totalProducts,
+  //     totalPages: Math.ceil(totalProducts / limit),
+  //     currentPage: page,
+  //   });
+  // } catch (error) {
+  //   console.error("Error fetching products:", error);
+  //   res.status(500).json({
+  //     success: false,
+  //     message: "Server Error",
+  //     error: error.message,
+  //   });
+  // }
 };
 
 const getSingleProductsController = async (req, res) => {

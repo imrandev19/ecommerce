@@ -58,13 +58,11 @@ const addproductController = async (req, res) => {
       { $push: { product: addproduct._id } },
       { new: true }
     );
-    return res
-      .status(200)
-      .json({
-        success: true,
-        message: "Product Added Sucessfully",
-        data: addproduct,
-      });
+    return res.status(200).json({
+      success: true,
+      message: "Product Added Sucessfully",
+      data: addproduct,
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
@@ -81,7 +79,7 @@ const getAllProductsController = async (req, res) => {
 
     // Build filter
     let filter = {
-      price: { $gte: minPrice, $lte: maxPrice }
+      price: { $gte: minPrice, $lte: maxPrice },
     };
 
     if (category && category !== "all") {
@@ -108,19 +106,17 @@ const getAllProductsController = async (req, res) => {
       data: products,
       total: totalProducts,
       totalPages: Math.ceil(totalProducts / limit),
-      currentPage: page
+      currentPage: page,
     });
-
   } catch (error) {
     console.error("Error fetching products:", error);
     res.status(500).json({
       success: false,
       message: "Server Error",
-      error: error.message
+      error: error.message,
     });
   }
 };
-
 
 const getSingleProductsController = async (req, res) => {
   try {
@@ -133,13 +129,11 @@ const getSingleProductsController = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Product Not Found" });
     } else {
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "Product Added Sucessfully",
-          data: getSingleProduct,
-        });
+      return res.status(200).json({
+        success: true,
+        message: "Product Added Sucessfully",
+        data: getSingleProduct,
+      });
     }
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
@@ -195,6 +189,25 @@ const getFeaturedProductsController = async (req, res) => {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
+const searchProductController = async (req, res) => {
+  try {
+    const { search } = req.query;
+    if(!search){
+      return res.status(201).json({success:true, message: "data fetch successfully", data: []})
+    }
+    const searchProduct = await productModel.find({
+      $or: [
+        {
+          title: { $regex: search, $options: "i" },
+        },
+        {description: {$regex: search, $options:"i"}}
+      ],
+    });
+    return res.status(201).json({success:true, message: "data fetch successfully", data: searchProduct})
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 module.exports = {
   addproductController,
@@ -202,4 +215,5 @@ module.exports = {
   getSingleProductsController,
   delteteProductController,
   getFeaturedProductsController,
+  searchProductController,
 };

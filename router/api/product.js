@@ -1,5 +1,5 @@
 const express = require("express")
-const {addproductController, getAllProductsController, getSingleProductsController, delteteProductController, getFeaturedProductsController} = require("../../controllers/productController")
+const {addproductController, getAllProductsController, getSingleProductsController, delteteProductController, getFeaturedProductsController, searchProductController} = require("../../controllers/productController")
 const authMiddleware = require("../../middleware/authMiddleware")
 const adminMiddleware = require("../../middleware/adminMiddleware")
 const upload = require("../../helpers/upload")
@@ -15,4 +15,6 @@ router.get("/getsingleproducts/:id", getSingleProductsController)
 router.delete("/delteproduct/:id", authMiddleware, adminMiddleware, delteteProductController)
 // http://localhost:4000/api/product/get-featured-products
 router.get("/get-featured-products", getFeaturedProductsController)
+// http://localhost:4000/api/product/search-product
+router.get("/search-product", searchProductController)
 module.exports = router

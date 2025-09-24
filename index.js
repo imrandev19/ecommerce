@@ -30,6 +30,8 @@ app.get('/authoriseduserpage', adminMiddleware,(req,res)=>{
 })
 
 app.use(express.json())
+// ✅ URL-encoded body parser (for SSLCommerz)
+app.use(express.urlencoded({ extended: true })); // ✅ must include for SSLCommerz POST
 app.use(express.static('uploads'))
 app.use(router)
 

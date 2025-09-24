@@ -8,6 +8,7 @@ const variant = require("./variant")
 const cart = require("./cart")
 const banner = require("./banner")
 const orders = require("./order")
+const payment = require("./payment")
 // http://localhost:4000/api/auth
 router.use("/auth", authRouter)
 // http://localhost:4000/api/category
@@ -24,5 +25,7 @@ router.use("/cart", cart)
 router.use("/banner", banner)
 // http://localhost:4000/api/orders
 router.use("/orders", orders)
+// http://localhost:4000/api/payment
+router.use("/payment", payment)
 
 module.exports = router

@@ -5,7 +5,7 @@ const router = express.Router()
 //Add order
 router.post("/", createOrder)
 // GET /api/orders/:userId
-router.get("/:userId", getUserOrders);
+router.get("/user/:userId", getUserOrders);
 
 // DELETE /api/orders/:orderId
 router.delete("/:orderId", cancelOrder);

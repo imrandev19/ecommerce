@@ -1,6 +1,7 @@
 const { default: slugify } = require("slugify");
 const categoryModel = require("../model/categoryModel");
 const subcategoryModel = require("../model/subcategoryModel");
+const productModel = require("../model/productModel");
 
 const addsubcategory = async (req, res) => {
   let { name, description, category } = req.body;
@@ -101,4 +102,5 @@ const getSubCategory = async(req,res)=>{
  }
 }
 
-module.exports = { addsubcategory, deletesubcategory, updatesubcategory, getSubCategory };
+
+module.exports = { addsubcategory, deletesubcategory, updatesubcategory, getSubCategory,  };

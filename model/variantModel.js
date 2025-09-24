@@ -3,14 +3,10 @@ const productModel = require("./productModel");
 
 const variantModel = new mongoose.Schema(
   {
-    image: {
-      type: String,
-      required: [true, "Image must be required"],
-    },
     color: {
       type: String,
     },
-    size: {
+    storage: {
       type: String,
     },
     price: {

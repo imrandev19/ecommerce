@@ -6,9 +6,9 @@ const adminMiddleware = require("../../middleware/adminMiddleware")
 const router = express.Router()
 
 // http://localhost:4000/api/variant/addvariant
-router.post("/addvariant", upload.single("image"),authMiddleware, adminMiddleware,  addVariantController )
+router.post("/addvariant",authMiddleware, adminMiddleware,  addVariantController )
 // http://localhost:4000/api/variant/deletevariant
 router.delete("/deletevariant/:id", authMiddleware, adminMiddleware,  deleteVariantController)
 // http://localhost:4000/api/variant/updatevariant
-router.patch("/updatevariant/:id", upload.single("image"), updateVariantController)
+router.patch("/updatevariant/:id", updateVariantController)
 module.exports = router

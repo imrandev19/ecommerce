@@ -5,16 +5,16 @@ const path = require("path");
 const fs = require("fs");
 const addVariantController = async (req, res) => {
   try {
-    let { product, stock, color, size, discountPercentage, price } = req.body;
+    let { product, stock, color, storage, discountPercentage, price } = req.body;
 
     const addVariant = new variantModel({
       product,
       stock,
       color,
-      size,
+      storage,
       discountPercentage,
       price,
-      image: `${process.env.SERVER_LINK}/${req.file.filename}`,
+      // image: `${process.env.SERVER_LINK}/${req.file.filename}`,
     });
      
     const productVariant = await productModel.findOneAndUpdate(

@@ -12,4 +12,5 @@ router.delete("/deletesubcategory/:id", authMiddleware, adminMiddleware, deletes
 router.patch("/updatesubcategory/:id", authMiddleware, adminMiddleware, updatesubcategory)
 // http://localhost:4000/api/subcategory/getsubcategory
 router.get("/getsubcategory/:id", getSubCategory)
+
 module.exports = router
